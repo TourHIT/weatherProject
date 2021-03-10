@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>weather</title>
+</head>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+<body>
+
+<div>
+    <div>
+        <select id="name" name="name" class="select"  size="1">
+            <option th:each="cities:${cities}" th:value="${cities}"
+                    th:text="${cities}" th:selected="${cities}"></option>
+        </select>
+    </div>
+    <table border="1">
+        <tr>
+            <td class="content">City</td>
+            <td class="content" id="city"></td>
+        </tr>
+        <tr>
+            <td class="content">Updated time</td>
+            <td class="content" id="updatedTime"></td>
+        </tr>
+        <tr>
+            <td class="content">Weather</td>
+            <td class="content" id="weather"></td>
+        </tr>
+        <tr>
+            <td class="content">Temperature</td>
+            <td class="content" id="temperature"></td>
+        </tr>
+        <tr>
+            <td class="content">Wind</td>
+            <td class="content" id="wind"></td>
+        </tr>
+    </table>
+</div>
+</body>
+<script>
+    $(document).ready(function () {
+        //页面加载完毕执行搜索
+        dealSearch();
+    })
+    $("#name").change(function () {
+        dealSearch();
+    });
+
+    /**
+     * 执行搜索
+     */
+    function dealSearch(){
+        var val = $("#name option:selected").val();
+        console.log("val: "+val);
+        var data = {"city":val};
+        $.ajax("search",{
+            type:"POST",
+            dataType: "json",
+            data:JSON.stringify(data),
+            contentType: "application/json",
+            success: function (data) {
+                if(data.code === 200){
+                    $("#city").html(data.city);
+                    $("#updatedTime").html(data.updatedTime);
+                    $("#weather").html(data.weather);
+                    $("#temperature").html(data.temperature);
+                    $("#wind").html(data.wind);
+                }else {
+                    alert("get error")
+                }
+
+            }
+        })
+    }
+</script>
+<style>
+    .content{
+        width: 200px;
+        text-align: center;
+    }
+</style>
+</html>
